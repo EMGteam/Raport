@@ -1,0 +1,97 @@
+\documentclass[10pt, a4paper]{article}
+
+%Preambuła dokumentu
+\usepackage{graphicx}       % pakiet graficzny, umożliwiający m.in.
+                            % import grafik w formacie eps
+\usepackage{rotating}       % pakiet umożliwiający obracanie rysunków
+\usepackage{subfigure}      % pakiet umożliwiający tworzenie podrysunków
+\usepackage{epic}           % pakiet umożliwiający rysowanie w środowisku latex
+\usepackage{listings}       % pakiet dedykowany zrodlom programow
+\usepackage{verbatim}       % pakiet dedykowany rozmaitym wydrukom tekstowym
+\usepackage{amssymb}        % pakiet z rozmaitymi symbolami matematycznymi
+\usepackage{amsmath}        % pakiet z rozmaitymi środowiskami matematycznymi
+\usepackage[polish]{babel}  % pakiet lokalizujący dokument w języku polskim
+\usepackage[OT4]{fontenc}
+\usepackage[utf8]{inputenc} % w miejsce utf8 można wpisać latin2 bądź cp1250,
+                            % w zależności od tego w jaki sposób kodowane są 
+                            % polskie znaki diakrytyczne przy wprowadzaniu 
+                            % z klawiatury.
+
+\usepackage[draft]{prelim2e}% informacja w stopcje o statusie dokumentu 
+                            % (draft-szkic lub final-wersja ostateczna) 
+
+\textwidth      16cm
+\textheight     25.5cm
+\evensidemargin -3mm
+\oddsidemargin  -3mm
+\topmargin      -20mm
+
+
+% deklaracje wymagane przez funkcję drukującą tytuł dokumentu:
+%
+\author{Kamil Bogus
+\and 
+Michał Prędkiewicz
+\and
+Krzysztof Kuczyński
+\and
+Michał Burdka
+}
+ 
+\title{Stanowisko badawcze do rejestracji sygnałów EMG i MMG na przedramieniu oraz sił nacisku i ułożenia dłoni} 
+
+\date{\today}
+
+% Koniec preambuły dokumentu
+
+% Tekst dokumentu
+
+\begin{document}
+\maketitle % drukuje tytul, autora i datę zdefiniowaną w preambule
+%
+%\the\setitem
+\def\tablename{Tabela}
+%
+
+\section{Wstęp}
+\label{sec:wstep} % definicja etykiety rozdziału
+%
+Celem projektu był rozwój stanowiska służącego do rejestracji sygnałów EMG i MMG pojawiających się na przedramieniu w trakcie chwytania. Rozbudowa ta opierała się o zaprojektowanie oraz wykonanie rękawicy służącej do pomiarów sił nacisku i ułożenia palców dłoni, stworzeniu płytki PCB, której zadaniem jest zasilanie rękawicy oraz przetwarzanie rezystancji czujników na napięcie mierzalne przez kartę pomiarową, dobór i zakup nowej karty pomiarowej ADC o większej ilości kanałów oraz wytworzenia oprogramowania pozwalającego na wygodne wykonywanie badań i obserwacji sygnałów pochodzących z czujników EMG, MMG oraz z rękawicy.
+
+\section{Dobór karty pomiarowej}
+\label{sec:karta}
+
+
+
+\section{Repertuar chwytów}
+\label{sec:chwyty}
+
+
+\section{Projekt i wykonanie rękawicy}
+\label{sec:rekawica}
+W ramach realizacji projketu wykonana została rękawica dla prawej dłoni wyposażona w czujniki nacisku oraz zgięcia.
+
+Do precyzyjnego badania siły dotyku poszczególnych części dłoni z chwytanym przedmiotem zastosowano 16 czujników nacisku. Czujniki te zostały wykonane ręcznie gdzyż daje to możliwość dopasowania ich do miejsca zastosowania trzema najważniejszymi parametrami - wielkością, kształtem oraz ilością pól pomiarowych. Dwa ze zastosowanych na śródręczu czujników posiadają po dwa pola robocze mierzące niezależnie siły nacisku. Wykorzystanie ich daje ostatecznie 18 miejsc na rękawiczke, w których można odczytywać siłę dotyku z chwytanym obiektem. 
+
+Miejsca umieszczenia poszczgólnych czujników muszą gwarantować poprawne i powtarzalne pomiary sił nacisku dla wszystkich, uwzględnionych w repertuarze, chwytów. Rozmieszczenie czujników prezentuje rys. .........
+Oczywistymi miejscami, w których znalazy się czujniki, są opuszki wszystkich palców. Ze względu na wielkość opuszka kciuka zastosowano na nim aż dwa czujniki. Kolejnym miejscem, gdzie umieszczono czujniki, jest śródręcze. Tutaj zastowano cztery czujniki w tym już wcześniej wspomniane dwa podwójne. Daje to łącznie sześć pól w których mierzony jest nacisk. Jedno wzdłóż podstawy palców, jedno pomiędzy kciukiem a palcem wskazującym, dwa na dolnej poduszce śródręcza oraz dwa na podstawie kciuka. Dwa czujniki zostały zamontowanie na boku palaca wskazującego w celu pomiarów pomiarów takich chwytów jak chwyt klucza od drzwi lub karty kredytowej. Pozostałe cztery czujniki umieszczone zostały na paliczkach palców wkazującego, środkowego, serdecznego i małego.
+
+Budowa czujników opiera się o folię polimerową zmieniającą swoją rezystancję pod wpływem zciskania. Trzy warstwy takiej folii umieszczone są pomiędzy fragmentami taśmy miedzianej o stałej, bardzo niskiej rezystancji. Do elementów z taśmy miedzianej przylutowane są przewody wyjściowe czujnika. Ponieważ zarówno folia rezystancyjna jak i miedziana są bardzo cieńkie i giętkie całość czujnika naklejona jest na sztywną folię z tworzywa sztucznego. Usztywnienie czujnika pozwala zniwelować wpływ wyginania go na zaburzenia pomiaru nacisku. Charakterystyki rezystancyji czujników od siły nacisku są wykładnicze. Gdy na czujniki nie działa żadna siła ich rezystancja wynosi około 20 kOhm, która szykbo maleje przy małych naciskach i zchodzi do około 20 Ohm przy nacisku o wartości około 500N (5kg).
+
+W rękawiczce zastosowano również 6 czujników zgięcia- po jednym na każdy palec oraz jeden do określania w jakiej pozycji znajduję się podstawa kciuka. Pięć z zastosowanych czyjników jest czujnikami fabrycznymi, a szósty jest wykonany podobnie jak czujniki nacisku. Ze wazględu na to, że czujnik ma mierzyć zgięcie nie został on naklejony na folię usztywniającą. W przypadku fabrycznych czujników, ich rezystancja rośnie wraz ze wzrostem wygięcia oraz jest prawie całkowicie nie zależna od nacisku na czujnik, natomiast rezystancja czujnika wykonanego ręcznie maleje wraz ze zgięciem i jest ona bardzo czuła na nacisk. 
+
+Przewody potrzebne do podłączenia każdego z umieszczonych na rękawiczce czujników do układu pomiaru rezystancji umieszczone są na wierzchu rękawiczki. Poprawia to zdecydowanie komfort używania rękawicy gdyż przewody nie przeszkadzają w chwytaniu przedmiotów. Dodatkowo długości tych przewodów zostały dobrane tak, aby był swobodny zapas. Sprawia to, że przewody nie ograniczają ruchów dłoni w trakcie zginania palców. Jako, że czujników jest łącznie 24,a każdy wymaga podłączenia dwoma przewodami, postanowiono, że wszystkie czujniki będą połączone jednym przewodem zasilającym. Spowodowało to ograniczenie liczby przewodów z potrzebnych 48 do 26 żył. 24 przedowy poprowadzone są do poszczególnych czyjników, jeden przewód jest zasilającym oraz jeden został zastosowany w celu pomiaru napięcia zasilającego. Ostatni przewód daje możliwość odsprzęgnięcia poszczególnych czujników od siebie nawzajem. Wszystkie 26 przewodów zostało spięte wtykiem żeńskim IDC o 26 pinach.
+
+
+
+\section{Projekt i wykonanie płytki PCB}
+\label{sec:PCB}
+
+\section{Wykonane oprogramowanie}
+\label{sec:program}
+
+\section{Badania}
+\label{sec:badania}
+
+\end{document}
+ 
