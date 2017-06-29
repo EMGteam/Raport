@@ -19,6 +19,10 @@
 
 \usepackage[draft]{prelim2e}% informacja w stopcje o statusie dokumentu 
                             % (draft-szkic lub final-wersja ostateczna) 
+\usepackage{hyperref}		% zamieszczanie adresów url
+\usepackage{booktabs}		% potrzebne do tabeli
+\usepackage{float}			% umożliwia lepsze rozmieszczenie obrazów
+\usepackage{pdfpages}		% załączanie plików .pdf
 
 \textwidth      16cm
 \textheight     25.5cm
@@ -61,7 +65,16 @@ Celem projektu był rozwój stanowiska służącego do rejestracji sygnałów EM
 \section{Dobór karty pomiarowej}
 \label{sec:karta}
 
+W celu realizacji projektu konieczny był zakup karty pomiarowej, ponieważ inne, dostępne w laboratorium nie były odpowiednie do wykonania wszystkich pomiarów. Kluczowe dla postawionego zadania były liczba kanałów oraz częstotliwość próbkowania.
 
+Najlepszym wyborem mieszczącym się w założonym budżecie okazała się karta Advantech PCI-1747U. Jej główne cechy to:
+\begin{itemize}
+\item 64 wejścia analogowe
+\item rozdzielczość: 16 bitów
+\item szybkość przetwornika A/C: 250kS/s
+\end{itemize}
+
+Podczas późniejszych testów zauważono przesłuchy na niepodpiętych kanałach. W razie wystąpienia takiej sytuacji na którymś z kanałów pomiarowych należy sprawdzić połączenia na tej ścieżce pomiarowej.
 
 \section{Repertuar chwytów}
 \label{sec:chwyty}
@@ -104,7 +117,9 @@ Oczywistymi miejscami, w których znalazły się czujniki, są opuszki wszystkic
 
 Budowa czujników opiera się o folię polimerową zmieniającą swoją rezystancję pod wpływem ściskania. Trzy warstwy takiej folii umieszczone są pomiędzy fragmentami taśmy miedzianej o stałej, bardzo niskiej rezystancji. Do elementów z taśmy miedzianej przylutowane są przewody wyjściowe czujnika. Ponieważ zarówno folia rezystancyjna jak i miedziana są bardzo cienkie i giętkie całość czujnika naklejona jest na sztywną folię z tworzywa sztucznego. Usztywnienie czujnika pozwala zniwelować wpływ wyginania go na zaburzenia pomiaru nacisku. Charakterystyki rezystancji czujników od siły nacisku są wykładnicze. Gdy na czujniki nie działa żadna siła ich rezystancja wynosi około 20 $k\Omega$, która szybko maleje przy małych naciskach i spada do około 20 $\Omega$ przy nacisku o wartości około 500N (5kg).
 
-W rękawiczce zastosowano również 6 czujników zgięcia- po jednym na każdy palec oraz jeden do określania w jakiej pozycji znajduję się podstawa kciuka. Pięć z zastosowanych czujników jest czujnikami fabrycznymi, a szósty jest wykonany podobnie jak czujniki nacisku. Ze względu na to, że czujnik ma mierzyć zgięcie nie został on naklejony na folię usztywniającą. W przypadku fabrycznych czujników, ich rezystancja rośnie wraz ze wzrostem wygięcia oraz jest prawie całkowicie nie zależna od nacisku na czujnik, natomiast rezystancja czujnika wykonanego ręcznie maleje wraz ze zgięciem i jest ona bardzo czuła na nacisk. 
+Podczas realizacji projektu został nagrany film instruktażowy, dotyczący wykonania czujników. Dostępny jest on pod adresem: \url{https://www.youtube.com/watch?v=_1SC1KYPq0I}
+
+W rękawiczce zastosowano również 6 czujników zgięcia - po jednym na każdy palec oraz jeden do określania w jakiej pozycji znajduję się podstawa kciuka. Pięć z zastosowanych czujników jest czujnikami fabrycznymi, a szósty jest wykonany podobnie jak czujniki nacisku. Ze względu na to, że czujnik ma mierzyć zgięcie nie został on naklejony na folię usztywniającą. W przypadku fabrycznych czujników, ich rezystancja rośnie wraz ze wzrostem wygięcia oraz jest prawie całkowicie nie zależna od nacisku na czujnik, natomiast rezystancja czujnika wykonanego ręcznie maleje wraz ze zgięciem i jest ona bardzo czuła na nacisk. 
 Rozmieszczenie czujników zgięcia przedstawia fotografia \ref{gora}.
 
 \begin{figure}[h!]
@@ -122,11 +137,208 @@ Przewody potrzebne do podłączenia każdego z umieszczonych na rękawiczce czuj
 \section{Projekt i wykonanie płytki PCB}
 \label{sec:PCB}
 
+Ponieważ w budowie rękawiczki zastosowano czujniki rezystancyjne, a karta pomiarowa odczytuje sygnały napięciowe konieczne było wykonanie układu pośredniczącego między rękawiczką a kartą. Biorąc pod uwagę, że system pracuje w stałych warunkach temperaturowych zdecydowano się na zastosowanie dzielników napięcia dla wszystkich czujników. Kolejnym tego powodem były obliczone niewielkie prądy maksymalne, płynące przez rezystory, więc jednocześnie brak istotnego ich nagrzewania.
+
+W celu dobrania wartości rezystancji do dzielników, wykonano wstępne pomiary reakcji czujników na nacisk oraz zgięcie. Tabele \ref{tab:rez_nacisk} oraz \ref{tab:rez_zgiecie} przedstawiają zmierzone rezystancje ($*$ oznacza problem z czujnikiem; został on później wymieniony).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Rezystancje czujników nacisku}
+    \begin{tabular}{rllll}
+    \toprule
+    \multicolumn{1}{l}{Nr} & Opis  & Brak nacisku & Słaby nacisk & Mocny nacisk \\
+    \midrule
+    3     & Śródręcze - długi & 10 $k\Omega$   & 1 $k\Omega$    & 0.3 $k\Omega$ \\
+    4     & Śródręcze - podwójny, strona palców & 20 $k\Omega$   & 2.5 $k\Omega$  & 1 $k\Omega$ \\
+    5     & Śródręcze - podwójny, strona nadgarstka & $>$20 $k\Omega$  & 5 $k\Omega$    & 1.5 $k\Omega$ \\
+    6     & Kciuk - opuszek, czubek & $>$20 $k\Omega$  & 2.5 $k\Omega$  & 0.5 $k\Omega$ \\
+    7     & Kciuk - opuszek & $>$20 $k\Omega$  & 2.5 $k\Omega$  & 0.5 $k\Omega$ \\
+    10    & Palec środkowy - paliczek & 20 $k\Omega$   & 8 $k\Omega$    & 2 $k\Omega$ \\
+    11    & Palec środkowy - opuszek & $>$20 $k\Omega$  & 2 $k\Omega$    & 0.3 $k\Omega$ \\
+    13    & Palec serdeczny - opuszek & $>$20 $k\Omega$  & 8 $k\Omega$    & 2 $k\Omega$ \\
+    14    & Palec serdeczny - paliczek & $>$20 $k\Omega$  & 8 $k\Omega$    & 2 $k\Omega$ \\
+    16    & Śródręcze/kciuk - podwójny, strona nadgarstka & $>$20 $k\Omega$  & 5 $k\Omega$    & 1.5 $k\Omega$ \\
+    17    & Śródręcze/kciuk - podwójny, strona palców & $>$20 $k\Omega$  & 5 $k\Omega$    & 2.5 $k\Omega$ \\
+    19    & Palec wskazujący- paliczek & $>$20 $k\Omega$  & 5 $k\Omega$    & 0.5 $k\Omega$ \\
+    20    & Śródręcze - mały & $>$20 $k\Omega$  & 8 $k\Omega$    & 1.5 $k\Omega$ \\
+    21    & Palec wskazujący - opuszek & $>$20 $k\Omega$  & 5 $k\Omega$    & 1 $k\Omega$ \\
+    22    & Palec wskazujący - opuszek, bok & $>$20 $k\Omega$  & 10 $k\Omega$   & 3 $k\Omega$ \\
+    23    & Palec wskazujący - paliczek, bok & $>$20 $k\Omega$  & 10 $k\Omega$   & 2 $k\Omega$ \\
+    25    & Palec mały - paliczek & $>$20 $k\Omega$  & 10 $k\Omega$   & 4 $k\Omega$ \\
+    26    & Palec mały - opuszek & $*$     & $*$     & $*$ \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:rez_nacisk}%
+\end{table}%
+
+\begin{table}[htbp]
+  \centering
+  \caption{Rezystancje czujników zgięcia}
+    \begin{tabular}{rlll}
+    \toprule
+    \multicolumn{1}{l}{Nr} & Opis  & Wyprostowany & Zgięty \\
+    \midrule
+    8     & Kciuk & 24 $k\Omega$   & 50 $k\Omega$ \\
+    9     & Środkowy & 20 $k\Omega$   & 40 $k\Omega$ \\
+    12    & Serdeczny & 36 $k\Omega$   & 80 $k\Omega$ \\
+    15    & Śródręcze & 60 $k\Omega$   & 20 $k\Omega$ \\
+    18    & Wskazujący & 30 $k\Omega$   & 80 $k\Omega$ \\
+    24    & Mały  & 20 $k\Omega$   & 60 $k\Omega$ \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:rez_zgiecie}%
+\end{table}%
+
+W celu unifikacji dobrano jeden rodzaj rezystorów dla wszystkich czujników nacisku (4.7$k\Omega$) oraz jeden dla wszystkich czujników zgięcia (39$k\Omega$).
+
+Następnie zmierzono charakterystyki napięciowe czujników w układach pomiarowych (tabele \ref{tab:nap_nacisk} oraz \ref{tab:nap_zgiecie}). Pomiary wykonane zostały z użyciem miernika Metex M-3800, przy napięciu zasilającym 4.98 $V$. Obciążenie czujników nacisku wywierano przez naciskania na wagę elektroniczną dłonią w rękawiczce, a więc w warunkach zbliżonych do warunków pracy systemu.
+
+Podobnie, jak poprzednio, $*$ oznacza problem z czujnikami, które później zostały wymienione.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Charakterystyki napięciowe czujników nacisku}
+    \begin{tabular}{rllllll}
+    \toprule
+    \multicolumn{1}{l}{Nr} & Opis  & \multicolumn{1}{r}{0} & \multicolumn{1}{r}{50} & \multicolumn{1}{r}{100} & \multicolumn{1}{r}{500} & \multicolumn{1}{r}{1000} \\
+    \midrule
+    3     & Śródręcze - długi & 1.8   & 3.2   & 3.5   & 4.45  & 4.7 \\
+    4     & Śródręcze - podwójny. strona palców & 0.4   & 1.4   & 2.2   & 3.9   & 4.25 \\
+    5     & Śródręcze - podwójny. strona nadgarstka & 0.5   & 1.4   & 1.9   & 4.1   & 4.5 \\
+    6     & Kciuk - opuszek. czubek & 0.45  & 2.3   & 3 & 4.3   & 4.65 \\
+    7     & Kciuk - opuszek & 0.2   & 1.4   & 2.6   & 3.9   & 4.3 \\
+    10    & Palec środkowy - paliczek & 1 & 2 & 2.6   & 3.8   & 4.2 \\
+    11    & Palec środkowy - opuszek & 0.6   & 2 & 2.8   & 4.1   & 4.5 \\
+    13    & Palec serdeczny - opuszek & $*$ & $*$ & $*$ & $*$ & $*$ \\
+    14    & Palec serdeczny - paliczek & 0.4   & 1.4   & 2.2   & 3.5   & 4 \\
+    16    & Śródręcze/kciuk - podwójny. strona nadgarstka & 0.65  & 1.2   & 1.55  & 2.4   & 3.1 \\
+    17    & Śródręcze/kciuk - podwójny. strona palców & 0.8   & 1.5   & 2.3   & 3.7   & 4.3 \\
+    19    & Palec wskazujący- paliczek & 0.7   & 1.9   & 2.6   & 3.9   & 4.6 \\
+    20    & Śródręcze - mały & 0.6   & 1.9   & 2.4   & 3.4   & 3.9 \\
+    21    & Palec wskazujący - opuszek & $*$ & $*$ & $*$ & $*$ & $*$ \\
+    22    & Palec wskazujący - opuszek. bok & 0.5   & 1 & 1.5   & 2.6   & 3 \\
+    23    & Palec wskazujący - paliczek. bok & 0.2   & 0.6   & 1.2   & 2.7   & 3.6 \\
+    25    & Palec mały - paliczek & 0.7   & 1 & 1.7   & 3 & 3.6 \\
+    26    & Palec mały - opuszek & $*$ & $*$ & $*$ & $*$ & $*$ \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:nap_nacisk}%
+\end{table}%
+
+\begin{table}[htbp]
+  \centering
+  \caption{Charakterystyki napięciowe czujników zgięcia}
+    \begin{tabular}{rlllr}
+    \toprule
+    \multicolumn{1}{l}{Nr} & Opis  & Wyprostowany & Połowicznie zgięty & Zgięty \\
+    \midrule
+    8     & Kciuk & 3 & 2.5   & 2 \\
+    9     & Środkowy & 3.3   & 2.9   & 2.6 \\
+    12    & Serdeczny & 2.4   & 1.9   & 1.5 \\
+    15    & Śródręcze & 2 & 2.2   & 3.7 \\
+    18    & Wskazujący & 2.6   & 2.1   & 1.8 \\
+    24    & Mały  & 3.1   & 2.5   & 2 \\
+	\bottomrule
+    \end{tabular}%
+  \label{tab:nap_zgiecie}%
+\end{table}%
+
+Przykładowa charakterystyka (czujnik nacisku, palec środkowy - opuszek) wygląda następująco (rysunek \ref{charakterystyka}):
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{Charakterystyka.png}
+\caption{Charakterystyka napięciowa układu czujnika nacisku (palec środkowy - opuszek)}
+\label{charakterystyka}
+\end{center}
+\end{figure}
+
+Poniżej przedstawiono zdjęcie gotowej płytki układu pośredniczącego z podpiętą taśmą 40 - pinową (rysunek \ref{pcb}).
+
+\begin{figure}[h!]
+\includegraphics[width=1\textwidth]{pcb.jpg}
+\caption{Układ pośredniczący}
+\label{pcb}
+\end{figure}
+
+Układ można zasilać napięciem od 6 $V$ do 26 $V$. Zasilanie sygnalizowane jest przez żółtą diodę LED.
+
+Schemat układu zamieszczony został w załączniku do niniejszego raportu.
+
+Uwaga! Numeracja pinów w złączu IDC 26 rozpoczyna się od strony diody LED znajdującej się na urządzeniu, a nie tam gdzie sugerowałaby strzałka na gnieździe. Taka numeracja odpowiada wcześniej wprowadzonym oznaczeniom czujników. W związku z tym wtyczkę należy wpinać korzystając z wycięcia od strony płytki. Wycięcie na górze jest zbędne.
+
+Numeracja złącza IDC 40 pin rozpoczyna się od strony bez gniazda zasilającego.
+
+Rozmieszczenie poszczególnych sygnałów w złączu IDC 40 pin najlepiej obrazuje załączony schemat.
+
+Do płytki został także wykonany prototyp obudowy.
+
 \section{Wykonane oprogramowanie}
 \label{sec:program}
 
-\section{Badania}
-\label{sec:badania}
+W ramach realizowanego projektu, obok rękawicy opatrzonej w pokaźną liczbę czujników, stworzona została również prosta aplikacja realizująca zadanie wizualizacji zbieranych danych oraz umożliwiająca przeprowadzenie procedury pomiarowej i zapisu odczytów z karty pomiarowej do plików tekstowych.
+\subsection{Użyte narzędzia}
+% https://www.codeproject.com/Articles/5501/The-Multimedia-Timer-for-the-NET-Framework
+Aplikacja została napisana w języku C\#, przy użyciu oprogramowania \texttt{Visual Studio Enterprise 2017} w oparciu o biblioteki służące tworzeniu graficznych interfejsów użytkownika - \texttt{Windows Forms}. Należy tutaj również wspomnieć o wykorzystaniu biblioteki \texttt{Multimedia.Timer} stworzonej i opublikowanej na wolnej licencji przez Leslie Sanford. Owa biblioteka stanowi implementację timera o dużej rozdzielczości 1ms, dzięki czemu możliwe było przeprowadzenie pomiarów z częstotliwością 1kHz (a dokładniej około 985Hz, 1.5\% spadek jest związany z dość dużą liczbą operacji, które są wykonywane przy każdorazowym odczycie danych z karty pomiarowej). Drugim użytym pakietem jest \texttt{ILMerge.MSBuild.Tasks}, dostępny poprzez menadżera pakietów NuGet stanowiącego część oprogramowania Visual Studia, dzięki któremu możliwe było połączenie pliku wykonywalnego oraz towarzyszących mu bibliotek .dll w jeden plik .exe, co ułatwia jego przenoszenie.
+
+\subsection{Zawartość rozwiązania}
+Kod źródłowy aplikacji stanowią cztery projekty - jeden główny, zawierający implementację interfejsu użytkownika, oraz 3 projekty z implementacją bibliotek kontrolek \texttt{Windows Forms}. Poniżej znajduje się bardziej szczegółowy opis struktury rozwiązania.
+\begin{subsubsection}{EMGchart}
+Jest to projekt zawierający w sobie implementację kontrolki odpowiedzialnej za graficzną wizualizację danych z pierwszych 16 kanałów karty pomiarowej - czyli sygnałów EMG oraz MMG, w formie wykresu, na wynikowym GUI znajduje się ich 16, a usytuowane są po lewej stronie.
+\end{subsubsection}
+\begin{subsubsection}{EMGforceSensor}
+Jest to projekt zawierający w sobie implementację kontrolki odpowiedzialnej za graficzną wizualizację danych z sensorów nacisku. Jego działanie można sprowadzić do zmiany koloru, przechodząc od czerwonego poprzez żółty aż do zielonego, w zależności wielkości siły przyłożonej do danego czujnika. Dzięki takiej implementacji możemy w projekcie interfejsu dowolnie zmieniać ich kształt dopasowując je do przypisanego im sensora i jego położenia na dłoni.
+\end{subsubsection}
+\begin{subsubsection}{EMGdebugConsole}
+Kontrolka ta stanowi nieedytowalne pole tekstowe, na którym wyświetlane zostają proste komunikaty dotyczące działania aplikacji bądź ewentualnych napotkanych błędów.
+\end{subsubsection}
+\begin{subsubsection}{EMGtestGUI}
+Projekt główny rozwiązania, zawiera w sobie implementację całego interfejsu użytkownika oraz referencje do wykorzystywanych bibliotek i kontrolek. Tutaj też zaimplementowana została obsługa karty pomiarowej oraz całej procedury przeprowadzania badań i rejestrowania wyników.
+\end{subsubsection}
+
+\subsection{Działanie aplikacji}
+Działanie aplikacji możemy podzielić na 4 fazy:
+\begin{itemize}
+\item Wizualizacja danych losowych - w przypadku braku połączenia z kartą pomiarową (w przypadku problemów z jej wykryciem należy upewnić się, iż na komputerze w tym samym czasie nie działa żadne inne oprogramowanie, które mogłoby ją wykorzystywać),
+\item Wizualizacja danych z czujników - w przypadku poprawnego połączenia z kartą pomiarową - należy tutaj zauważyć, iż aplikacja działa wtedy jedynie w trybie wyświetlania, a nie rejestracji czy zapisu danych,
+\item Kolejne dwie fazy są ze sobą ściśle połączone i wynikają one ze sposobu przeprowadzania pomiarów - bezpośrednio po naciśnięciu przycisku \texttt{Rozpocznij pomiar} następuje przejście do trybu Pauzy, która stanowi kilkusekundowy odpoczynek dla osoby przeprowadzającej badania, a następnie rozpoczyna się pierwsza sesja pomiarowa, podczas której wszystkie rejestrowane sygnały są zbierane, aby na końcu dać możliwość ich zapisu do pliku. W szczególnym przypadku możliwe jest anulowanie danego pomiaru za pomocą klawisza spacji, naciśniętego podczas odpoczynku następującego bezpośrednio po nieudanym pomiarze. Przebieg obu tych faz jest wizualizowany poprzez dwa paski postępu, które jednocześnie stanowią informację zwrotną dla użytkownika o aktualnym stanie sesji pomiarowej.
+\end{itemize}
+
+\subsection{Dostosowywanie parametrów sesji pomiarowej}
+
+Aby dać użytkownikowi pewną kontrolę nad przeprowadzaną procedurą pomiarową, w prawej części interfejsu (Rysunek \ref{gui}) znajduje się niewielki panel ustawień, który pozwala na modyfikację czasu pomiaru bądź też pauzy - oraz ścieżki (względem katalogu, w którym znajduje się sama aplikacja) zapisu danych w postaci plików tekstowych, których nazwy stanowią kolejne liczby poczynając od 0.
+
+\begin{figure}[H]
+\includegraphics[width=1\textwidth]{gui.png}
+\caption{Widok interfejsu użytkownika} \label{gui}
+\end{figure}
+
+\subsection{Kompilacja do pojedynczego pliku wykonywalnego}
+Jak już wcześniej wspomniano - do projektu dołączony został pakiet pozwalający na scalanie plików binarnych, w naszym przypadku posłużył on do wcielenia plików bibliotek .dll do wynikowego pliku wykonywalnego. Ze względu na dość duże spowolnienie procesu kompilacji kod odpowiedzialny za tę operację został zakomentowany, aby jednak użyć tej funkcjonalności należy odkomentować blok kodu stanowiący około 10 ostatnich wierszy pliku \texttt{EMG$\backslash$EMGtestGUI$\backslash$EMGtestGUI.csproj}, a następnie przeprowadzić proces kompilacji. W Wyniku tej operacji powstanie plik \texttt{EMGAllInOne.exe}.
+
+\newpage
+
+\subsection{Ikona}
+
+Do aplikacji zostało wykonane logo (ikona) (rysunek \ref{ikona}). Za jego projekt odpowiada Anna Kuczyńska.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{Ikona.png}
+\caption{Ikona}
+\label{ikona}
+\end{center}
+\end{figure}
+
+\subsection{Dokumentacja kodu}
+Całość kodu została opatrzona w ustandaryzowane komentarze wewnątrz plików źródłowych, które mogą stanowić pomoc w przypadku dalszych prób rozwoju oprogramowania przez inne osoby.
+
+
+\section{Podsumowanie}
+\label{sec:podsumowanie}
+
+Podczas prac przy projekcie powstał gotowy system do pomiaru oraz zapisu sygnałów EMG/MMG ręki oraz sygnałów odpowiadających naciskowi palców podczas chwytania przedmiotów. Zakupiono oraz wykonano wszelkie niezbędne elementy stanowiska (łącznie z oprogramowaniem).
+
+System w tej formie może być wykorzystany do przeprowadzania badań i analizy chwytów. Jedynym problemem mogą być pojawiające się przesłuchy na kanałach pomiarowych, jednak zaobserwowano, że pojawiają się tylko wtedy, gdy pod dany kanał nie jest podpięty żaden sygnał (lub występuje przerwa w obwodzie). Informacja ta może być przydatna przy diagnostyce połączeń.
 
 \end{document}
- 
