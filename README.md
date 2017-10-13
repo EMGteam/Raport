@@ -1,3 +1,4 @@
 # Raport
 
-Piszemy to jak najszybciej :P
+Link do wersji .pdf:
+https://drive.google.com/open?id=0B1Wfkxo-KiWkVjJfM0VWbG1LYkU
